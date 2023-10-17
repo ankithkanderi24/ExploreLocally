@@ -15,7 +15,6 @@ const Stack = createStackNavigator();
 const App = () => {
   const [data, setData] = useState([]);
   const [username, setUsername] = useState(null);  // New state to track login
-
   useEffect(() => {
     if (username) {  // Only fetch data if logged in
       fetch('http://127.0.0.1:5000/advisor/getall')
