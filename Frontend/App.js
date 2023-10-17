@@ -1,20 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import PersonCard from './PersonCard'; // Import the PersonCard component
 
-export default function App() {
+const App = () => {
+  const [data, setData] = useState([]);
+  
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/advisor/getall')
+      .then((response) => response.json())
+      .then((jsonData) => setData(jsonData))
+      .catch((error) => console.error(error));
+  }, []);
+  
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        {}
+        {data.map((username, index) => (
+          <PersonCard key={index} username={username} />
+        ))}
+      </ScrollView>
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 20,
   },
 });
+
+export default App;
