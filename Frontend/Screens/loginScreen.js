@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Switch, Text, Alert } from 'react-native';
 
-const LoginScreen = ({ onLogin, onGoToRegister }) => {
+const LoginScreen = ({ onLogin, navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAdvisor, setIsAdvisor] = useState(false);  // State to keep track of toggle
@@ -27,6 +27,7 @@ const LoginScreen = ({ onLogin, onGoToRegister }) => {
       console.log("Server Response:", text);  // Log the raw response
       if (status === 200) {
         onLogin(username);  // Log the user in if status is 200
+        navigation.navigate('Dashboard');
       } else {
         Alert.alert('Login Failed:', text);
       }
@@ -61,7 +62,7 @@ const LoginScreen = ({ onLogin, onGoToRegister }) => {
         />
         <Text>Advisor</Text>
       </View>
-      <Button title="Register an Account" onPress={onGoToRegister} color="#e74c3c" />
+      <Button title="Register an Account" onPress={() => navigation.navigate('Registration')} color="#e74c3c" />
     </View>
   );
 };
