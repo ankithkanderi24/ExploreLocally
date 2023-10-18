@@ -23,16 +23,16 @@ def hello():
 def register_user(username, password):
     if request.method == 'POST':
         if not username or not password:
-            return "Username and password required", 400
+            return "Username and password required", 401
 
         response = user_table.get_item(Key={'username': username})
 
         if 'Item' in response:
-            return "Username already exists", 400
+            return "Username already exists", 201
 
         user_table.put_item(Item={'username': username, 'password': password})
 
-        return "User registered successfully", 201
+        return "User registered successfully", 400
     else:
         return "Method Not Allowed", 405
     
@@ -42,16 +42,16 @@ def register_user(username, password):
 def register_advisor(username, password):
     if request.method == 'POST':
         if not username or not password:
-            return "Username and password required", 400
+            return "Username and password required", 401
 
         response = advisor_table.get_item(Key={'username': username})
 
         if 'Item' in response:
-            return "Username already exists", 400
+            return "Username already exists", 201
 
         advisor_table.put_item(Item={'username': username, 'password': password})
 
-        return "Advisor registered successfully", 201
+        return "Advisor registered successfully", 400
     else:
         return "Method Not Allowed", 405
 
@@ -61,7 +61,7 @@ def register_advisor(username, password):
 @cross_origin()
 def verify_user(username, password):
         if not username:
-            return "Username required", 400
+            return "Username required", 401
 
         response = user_table.get_item(Key={'username': username})
 
@@ -70,7 +70,7 @@ def verify_user(username, password):
             if password == stored_password:
                 return "User exists and password is correct", 200
             else:
-                return "Password is incorrect", 401
+                return "Password is incorrect", 402
         else:
             return "User not found", 404
         
@@ -79,7 +79,7 @@ def verify_user(username, password):
 @cross_origin()
 def verify_advisor(username, password):
         if not username:
-            return "Username required", 400
+            return "Username required", 401
 
         response = advisor_table.get_item(Key={'username': username})
 
@@ -88,7 +88,7 @@ def verify_advisor(username, password):
             if password == stored_password:
                 return "User exists and password is correct", 200
             else:
-                return "Password is incorrect", 401
+                return "Password is incorrect", 402
         else:
             return "User not found", 404
         
