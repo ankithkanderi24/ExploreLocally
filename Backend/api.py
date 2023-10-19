@@ -75,7 +75,7 @@ def verify_user(username, password):
             return "User not found", 404
         
 #http://127.0.0.1:5000/advisor/verify/<username>/<password>
-@app.route('/advisor/verify/<username>/<password>', methods = ['GET'])
+@app.route('/advisors/verify/<username>/<password>', methods = ['GET'])
 @cross_origin()
 def verify_advisor(username, password):
         if not username:
