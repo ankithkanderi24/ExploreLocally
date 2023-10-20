@@ -6,6 +6,7 @@ const LoginScreen = ({ onLogin, navigation }) => {
   const [password, setPassword] = useState('');
   const [isAdvisor, setIsAdvisor] = useState(false);  // State to keep track of toggle
 
+
   const handleLogin = () => {
     const userType = isAdvisor ? 'advisors' : 'users';  // Determine user type based on toggle state
     fetch(`http://127.0.0.1:5000/${userType}/verify/${username}/${password}`, {
@@ -26,13 +27,19 @@ const LoginScreen = ({ onLogin, navigation }) => {
     .then(({ status, text }) => {
       console.log("Server Response:", text);  // Log the raw response
       if (status === 200) {
-        onLogin(username);  // Log the user in if status is 200
-        navigation.navigate('Dashboard');
+        if (userType === 'users') {
+          onLogin(username);  // Log the user in if status is 200
+          navigation.navigate('Dashboard');
+        } else {
+          onLogin(username);  // Log the user in if status is 200
+          navigation.navigate('WaitingScreen');
+        }
       } else {
         Alert.alert('Login Failed:', text);
       }
     })
     .catch(error => console.error(error));
+    navigation.navigate('PersonCardScreen');
   };
 
   return (
