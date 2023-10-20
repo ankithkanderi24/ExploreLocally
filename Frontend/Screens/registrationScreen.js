@@ -4,11 +4,15 @@ import { View, TextInput, Button, StyleSheet, Switch, Text, Alert } from 'react-
 const RegistrationScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
   const [isAdvisor, setIsAdvisor] = useState(false);  // State to keep track of toggle
 
   const handleRegistration = () => {
     const userType = isAdvisor ? 'advisors' : 'users';
-    fetch(`http://127.0.0.1:5000/${userType}/register/${username}/${password}`, {
+    const baseURL = 'http://127.0.0.1:5000';
+    // Conditionally construct the URL based on userType
+    const url = isAdvisor ? `${baseURL}/${userType}/register/${username}/${password}/${phone}`: `${baseURL}/${userType}/register/${username}/${password}`;
+    fetch(url, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -25,7 +29,7 @@ const RegistrationScreen = ({ navigation }) => {
       })
       .then(({ status, text }) => {
         console.log("Server Response:", text);  // Log the raw response
-        if (status === 400) {
+        if (status === 200) {
           navigation.navigate('Login');
         } else {
           Alert.alert('Registration Failed:', text);
@@ -49,6 +53,15 @@ const RegistrationScreen = ({ navigation }) => {
         secureTextEntry
         style={styles.input}
       />
+      {/* Conditionally render the phone field based on isAdvisor */}
+      {isAdvisor && (
+        <TextInput
+          placeholder="Phone"
+          value={phone}
+          onChangeText={setPhone}
+          style={styles.input}
+        />
+      )}
       <Button title="Register" onPress={handleRegistration} color="#3498db" />
       <View style={styles.toggleContainer}>
         <Text>User</Text>

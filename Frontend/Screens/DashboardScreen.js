@@ -8,7 +8,6 @@ const DashboardScreen = () => {
 
   // Fetch data when component mounts
   useEffect(() => {
-    console.log(data);
     fetch('http://127.0.0.1:5000/advisor/getall')
       .then((response) => response.json())
       .then((jsonData) => setData(jsonData))

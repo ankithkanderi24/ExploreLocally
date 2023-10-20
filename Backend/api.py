@@ -28,18 +28,18 @@ def register_user(username, password):
         response = user_table.get_item(Key={'username': username})
 
         if 'Item' in response:
-            return "Username already exists", 201
+            return "Username already exists", 401
 
         user_table.put_item(Item={'username': username, 'password': password})
 
-        return "User registered successfully", 400
+        return "User registered successfully", 200
     else:
         return "Method Not Allowed", 405
-    
-#http://127.0.0.1:5000/advisors/register/<username>/<password>
-@app.route('/advisors/register/<username>/<password>', methods = ['POST'])
+
+#http://127.0.0.1:5000/advisors/register/<username>/<password>/<phone>
+@app.route('/advisors/register/<username>/<password>/<phone>', methods = ['POST'])
 @cross_origin()
-def register_advisor(username, password):
+def register_advisor(username, password, phone):
     if request.method == 'POST':
         if not username or not password:
             return "Username and password required", 401
@@ -47,13 +47,19 @@ def register_advisor(username, password):
         response = advisor_table.get_item(Key={'username': username})
 
         if 'Item' in response:
-            return "Username already exists", 201
+            return "Username already exists", 401
 
-        advisor_table.put_item(Item={'username': username, 'password': password})
+        # If phone is not provided, use a default one (optional)
+        if not phone:
+            phone = "7322996948"
 
-        return "Advisor registered successfully", 400
+        # Add the new advisor
+        advisor_table.put_item(Item={'username': username, 'password': password, 'phone': phone})
+
+        return "Advisor registered successfully", 200
     else:
         return "Method Not Allowed", 405
+
 
 
 #http://127.0.0.1:5000/users/verify/<username>/<password>
@@ -73,7 +79,7 @@ def verify_user(username, password):
                 return "Password is incorrect", 402
         else:
             return "User not found", 404
-        
+
 #http://127.0.0.1:5000/advisor/verify/<username>/<password>
 @app.route('/advisors/verify/<username>/<password>', methods = ['GET'])
 @cross_origin()

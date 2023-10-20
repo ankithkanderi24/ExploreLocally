@@ -39,7 +39,6 @@ const LoginScreen = ({ onLogin, navigation }) => {
       }
     })
     .catch(error => console.error(error));
-    navigation.navigate('Dashboard');
   };
 
   return (
