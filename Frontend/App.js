@@ -6,13 +6,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import PersonCard from './PersonCard'; // Import the PersonCard component
 import LoginScreen from './Screens/loginScreen'; // Import the LoginScreen
 import RegistrationScreen from './Screens/registrationScreen';
+import DashboardScreen from './Screens/DashboardScreen';
+import WaitingScreen from './WaitingScreen';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   const [data, setData] = useState([]);
   const [username, setUsername] = useState(null);  // New state to track login
-  
   useEffect(() => {
     if (username) {  // Only fetch data if logged in
       fetch('http://127.0.0.1:5000/advisor/getall')
@@ -21,7 +22,6 @@ const App = () => {
         .catch((error) => console.error(error));
     }
   }, [username]);
-  
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
@@ -30,14 +30,9 @@ const App = () => {
         </Stack.Screen>
         <Stack.Screen name="Registration" component={RegistrationScreen} />
         <Stack.Screen name="Dashboard">
-          {props => (
-            <SafeAreaView style={styles.container}>
-              {data.map((username, index) => (
-                <PersonCard key={index} username={username} />
-              ))}
-            </SafeAreaView>
-          )}
+          {props => <DashboardScreen {...props} data={data} />}
         </Stack.Screen>
+        <Stack.Screen name = "WaitingScreen" component={WaitingScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
