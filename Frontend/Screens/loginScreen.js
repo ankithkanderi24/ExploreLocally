@@ -6,7 +6,6 @@ const LoginScreen = ({ onLogin, navigation }) => {
   const [password, setPassword] = useState('');
   const [isAdvisor, setIsAdvisor] = useState(false);  // State to keep track of toggle
 
-
   const handleLogin = () => {
     const userType = isAdvisor ? 'advisors' : 'users';  // Determine user type based on toggle state
     fetch(`http://127.0.0.1:5000/${userType}/verify/${username}/${password}`, {
