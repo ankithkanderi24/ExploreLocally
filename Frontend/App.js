@@ -9,7 +9,6 @@ import RegistrationScreen from './Screens/registrationScreen';
 import DashboardScreen from './Screens/DashboardScreen';
 import WaitingScreen from './WaitingScreen';
 
-
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -23,7 +22,6 @@ const App = () => {
         .catch((error) => console.error(error));
     }
   }, [username]);
-
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
