@@ -39,7 +39,7 @@ const LoginScreen = ({ onLogin, navigation }) => {
       }
     })
     .catch(error => console.error(error));
-    navigation.navigate('PersonCardScreen');
+    navigation.navigate('Dashboard');
   };
 
   return (

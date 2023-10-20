@@ -1,15 +1,16 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import { Linking } from 'react-native';
 
-const PersonCard = ({ username }) => {
-  const handleCallButtonPress = () => {
-    Alert.alert(`Calling ${username}...`);
+
+const PersonCard = ({username, phone }) => {
+  const makeCall = (phone) => {
+    Linking.openURL(`tel:${phone}`);
   };
-
   return (
     <View style={styles.card}>
-      <Text style={styles.name}>{username}</Text>
-      <Button title="Call" onPress={handleCallButtonPress} />
+      <Text>{username}</Text>
+      <Button title="Call" onPress={() => makeCall(phone)} />
     </View>
   );
 };
@@ -27,5 +28,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
+
 
 export default PersonCard;

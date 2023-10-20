@@ -91,22 +91,27 @@ def verify_advisor(username, password):
                 return "Password is incorrect", 402
         else:
             return "User not found", 404
-        
+
 #http://127.0.0.1:5000/advisor/getall
 @app.route('/advisor/getall', methods = ['GET'])
 @cross_origin()
 def get_advisors():
     try:
-        response = advisor_table.scan(AttributesToGet=['username'])
+        # Include 'phone' in AttributesToGet
+        response = advisor_table.scan(AttributesToGet=['username', 'phone'])
         items = response.get('Items', [])
-        usernames = [item['username'] for item in items]
-        print(usernames)
-        advisor_response = json.dumps(usernames)
+
+        # Create a list of dictionaries, each containing 'username' and 'phone'
+        advisors = [{"username": item['username'], "phone": item.get('phone', 'N/A')} for item in items]
+
+        print(advisors)
+        advisor_response = json.dumps(advisors)
+
         return Response(response=advisor_response, content_type='application/json', status=200)
     except Exception as e:
         return Response(response=json.dumps({"error": str(e)}), content_type='application/json', status=500)
 
-        
+
 
 
 if __name__ == '__main__':
