@@ -146,7 +146,7 @@ def user_login(username, password):
 
         
 #http://127.0.0.1:5000/advisor/verify/<username>/<password>
-@app.route('/advisor/verify/<username>/<password>', methods = ['GET'])
+@app.route('/advisors/verify/<username>/<password>', methods = ['GET'])
 @cross_origin()
 def advisor_login(username, password):
     if not username or not password:
@@ -174,7 +174,7 @@ def advisor_login(username, password):
 
 
 #http://127.0.0.1:5000/advisor/getall
-@app.route('/advisor/getall', methods = ['GET'])
+@app.route('/advisors/getall', methods = ['GET'])
 @cross_origin()
 def get_advisors():
     try:

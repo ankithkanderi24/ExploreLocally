@@ -6,6 +6,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import PersonCard from './PersonCard'; // Import the PersonCard component
 import LoginScreen from './Screens/loginScreen'; // Import the LoginScreen
 import RegistrationScreen from './Screens/registrationScreen';
+import AdvisorWaitingScreen from './Screens/AdvisorWaitingScreen';
+import AdvisorRegistrationInformationScreen from './Screens/AdvisorRegistrationInformationScreen';
 
 const Stack = createStackNavigator();
 
@@ -15,7 +17,7 @@ const App = () => {
   
   useEffect(() => {
     if (username) {  // Only fetch data if logged in
-      fetch('http://127.0.0.1:5000/advisor/getall')
+      fetch('http://127.0.0.1:5000/advisors/getall')
         .then((response) => response.json())
         .then((jsonData) => setData(jsonData))
         .catch((error) => console.error(error));
@@ -29,6 +31,8 @@ const App = () => {
           {props => <LoginScreen {...props} onLogin={setUsername} />}
         </Stack.Screen>
         <Stack.Screen name="Registration" component={RegistrationScreen} />
+        <Stack.Screen name = "Waiting" component={AdvisorWaitingScreen} />
+        <Stack.Screen name = "AdvisorRegistration" component={AdvisorRegistrationInformationScreen} />
         <Stack.Screen name="Dashboard">
           {props => (
             <SafeAreaView style={styles.container}>

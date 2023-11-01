@@ -4,11 +4,12 @@ import { View, TextInput, Button, StyleSheet, Switch, Text, Alert } from 'react-
 const RegistrationScreen = ({ onRegister, navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [isAdvisor, setIsAdvisor] = useState(false);  // State to keep track of toggle
 
   const handleRegistration = () => {
     const userType = isAdvisor ? 'advisors' : 'users';
-    fetch(`http://127.0.0.1:5000/${userType}/register/${username}/${password}`, {
+    fetch(`http://127.0.0.1:5000/${userType}/register/${username}/${password}/${email}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -16,24 +17,26 @@ const RegistrationScreen = ({ onRegister, navigation }) => {
       },
     })
     .then(response => {
-        const statusCode = response.status;  // Capture the status code
-        // Get the response text regardless of the status code
-        return response.text().then(text => ({
-          status: statusCode,
-          text: text
-        }));
-      })
-      .then(({ status, text }) => {
-        console.log("Server Response:", text);  // Log the raw response
-        if (status === 400) {
-          onRegister(username);
-          navigation.navigate('Login');
-        } else {
-          Alert.alert('Registration Failed:', text);
-        }
-      })
-      .catch(error => console.error(error));
-    };
+      const statusCode = response.status;
+      return response.text().then(text => ({
+        status: statusCode,
+        text: text
+      }));
+    })
+    .then(({ status, text }) => {
+      console.log("Server Response:", text);
+      if (status === 400) {
+        onRegister(username);
+        navigation.navigate('Login');
+      } else if (status === 200 && isAdvisor) {
+        // If the registration was successful and the user is an advisor, navigate to AdvisorRegistrationInformationScreen
+        navigation.navigate('AdvisorRegistration', { username });
+      } else {
+        Alert.alert('Registration Failed:', text);
+      }
+    })
+    .catch(error => console.error(error));
+  };
 
   return (
     <View style={styles.container}>
@@ -48,6 +51,12 @@ const RegistrationScreen = ({ onRegister, navigation }) => {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Email" // Added email input
+        value={email}
+        onChangeText={setEmail}
         style={styles.input}
       />
       <Button title="Register" onPress={handleRegistration} color="#3498db" />
