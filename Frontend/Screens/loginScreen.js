@@ -26,12 +26,11 @@ const LoginScreen = ({ onLogin, navigation }) => {
     .then(({ status, text }) => {
       console.log("Server Response:", text);  // Log the raw response
       if (status === 200) {
-        if (userType === 'users') {
-          onLogin(username);  // Log the user in if status is 200
-          navigation.navigate('Dashboard');
-        } else {
-          onLogin(username);  // Log the user in if status is 200
-          navigation.navigate('WaitingScreen');
+        onLogin(username);
+        if (isAdvisor) {
+          navigation.navigate('Waiting')
+        } else { // Log the user in if status is 200
+        navigation.navigate('Dashboard');
         }
       } else {
         Alert.alert('Login Failed:', text);

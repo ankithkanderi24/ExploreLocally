@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Switch, Text, Alert } from 'react-native';
 
-const RegistrationScreen = ({ navigation }) => {
+const RegistrationScreen = ({ onRegister, navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [isAdvisor, setIsAdvisor] = useState(false);  // State to keep track of toggle
 
   const handleRegistration = () => {
     const userType = isAdvisor ? 'advisors' : 'users';
-    const baseURL = 'http://127.0.0.1:5000';
-    // Conditionally construct the URL based on userType
-    const url = isAdvisor ? `${baseURL}/${userType}/register/${username}/${password}/${phone}`: `${baseURL}/${userType}/register/${username}/${password}`;
-    fetch(url, {
+    fetch(`http://127.0.0.1:5000/${userType}/register/${username}/${password}/${email}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -20,23 +17,26 @@ const RegistrationScreen = ({ navigation }) => {
       },
     })
     .then(response => {
-        const statusCode = response.status;  // Capture the status code
-        // Get the response text regardless of the status code
-        return response.text().then(text => ({
-          status: statusCode,
-          text: text
-        }));
-      })
-      .then(({ status, text }) => {
-        console.log("Server Response:", text);  // Log the raw response
-        if (status === 200) {
-          navigation.navigate('Login');
-        } else {
-          Alert.alert('Registration Failed:', text);
-        }
-      })
-      .catch(error => console.error(error));
-    };
+      const statusCode = response.status;
+      return response.text().then(text => ({
+        status: statusCode,
+        text: text
+      }));
+    })
+    .then(({ status, text }) => {
+      console.log("Server Response:", text);
+      if (status === 400) {
+        onRegister(username);
+        navigation.navigate('Login');
+      } else if (status === 200 && isAdvisor) {
+        // If the registration was successful and the user is an advisor, navigate to AdvisorRegistrationInformationScreen
+        navigation.navigate('AdvisorRegistration', { username });
+      } else {
+        Alert.alert('Registration Failed:', text);
+      }
+    })
+    .catch(error => console.error(error));
+  };
 
   return (
     <View style={styles.container}>
@@ -53,15 +53,12 @@ const RegistrationScreen = ({ navigation }) => {
         secureTextEntry
         style={styles.input}
       />
-      {/* Conditionally render the phone field based on isAdvisor */}
-      {isAdvisor && (
-        <TextInput
-          placeholder="Phone"
-          value={phone}
-          onChangeText={setPhone}
-          style={styles.input}
-        />
-      )}
+      <TextInput
+        placeholder="Email" // Added email input
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+      />
       <Button title="Register" onPress={handleRegistration} color="#3498db" />
       <View style={styles.toggleContainer}>
         <Text>User</Text>
@@ -108,3 +105,4 @@ const styles = StyleSheet.create({
 });
 
 export default RegistrationScreen;
+
