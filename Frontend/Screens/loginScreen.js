@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Switch, Text, Alert } from 'react-native';
 
+
+
 const LoginScreen = ({ onLogin, navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -30,7 +32,7 @@ const LoginScreen = ({ onLogin, navigation }) => {
         if (isAdvisor) {
           navigation.navigate('Waiting')
         } else { // Log the user in if status is 200
-        navigation.navigate('Dashboard');
+        navigation.navigate('SearchAdvisors');
         }
       } else {
         Alert.alert('Login Failed:', text);

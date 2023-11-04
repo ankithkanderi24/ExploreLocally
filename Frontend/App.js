@@ -8,6 +8,7 @@ import LoginScreen from './Screens/loginScreen'; // Import the LoginScreen
 import RegistrationScreen from './Screens/registrationScreen';
 import AdvisorWaitingScreen from './Screens/AdvisorWaitingScreen';
 import AdvisorRegistrationInformationScreen from './Screens/AdvisorRegistrationInformationScreen';
+import SearchAdvisorsScreen from './Screens/SearchAdvisorsScreen';
 
 const Stack = createStackNavigator();
 
@@ -33,6 +34,7 @@ const App = () => {
         <Stack.Screen name="Registration" component={RegistrationScreen} />
         <Stack.Screen name = "Waiting" component={AdvisorWaitingScreen} />
         <Stack.Screen name = "AdvisorRegistration" component={AdvisorRegistrationInformationScreen} />
+        <Stack.Screen name="SearchAdvisors" component={SearchAdvisorsScreen} />
         <Stack.Screen name="Dashboard">
           {props => (
             <SafeAreaView style={styles.container}>
