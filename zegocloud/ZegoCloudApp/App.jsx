@@ -30,8 +30,8 @@ function CallPage(props) {
   return (
       <View style={{flex: 1}}>
           <ZegoUIKitPrebuiltCall
-            appID={321004940}
-            appSign='458d8d6b68f9df333bd476fd8892e82021ee24fbc6c41c007aa731bf238e55ee'
+            appID={app_ID_here}
+            appSign='app sign here'
             userID={randomUserID}
             userName={'user_'+randomUserID}
             callID='testCallID'
