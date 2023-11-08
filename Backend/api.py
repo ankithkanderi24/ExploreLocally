@@ -3,6 +3,7 @@ import boto3
 from flask import Flask, request, Response, jsonify
 from flask_cors import CORS, cross_origin
 from botocore.exceptions import ClientError
+from boto3.dynamodb.conditions import Key, Attr
 
 app = Flask(__name__)
 CORS(app)
@@ -100,14 +101,14 @@ def register_advisor_account(username, password, email):
 def register_advisor_information(username):
         data = request.json
 
-        languages = data.get('languages')
-        interests = data.get('interests')
+        languages_set = set(data.get('languages', []))
+        interests_set = set(data.get('interests', []))
         location = data.get('location')
 
         item = {
             'username': username,
-            'languages': languages,
-            'interests': interests,
+            'languages': list(languages_set),
+            'interests': list(interests_set),
             'location': location, 
             'rating': 0, 
             'rating_num': 0
@@ -170,20 +171,51 @@ def advisor_login(username, password):
         
         
 
+#http://127.0.0.1:5000/advisors/query
+@app.route('/advisors/query', methods=['GET'])
+@cross_origin()
+def query_advisors():
+    
+    languages = request.args.get('languages')
+    location = request.args.get('location')
+    interests = request.args.get('interests')
+
+    try:
+        scan_args = {
+            'FilterExpression': Attr('location').eq(location)
+        }
+
+        if languages:
+            scan_args['FilterExpression'] = scan_args['FilterExpression'] & Attr('languages').contains(languages)
+
+        if interests:
+            for interest in interests.split(','):
+                print(f"Key: {interest}")
+                scan_args['FilterExpression'] = scan_args['FilterExpression'] & Attr('interests').contains(interest)
+
+        response = advisor_table.scan(**scan_args)
+
+        items = response.get('Items', [])
+        return jsonify(items)
+
+    except ClientError as e:
+        print(f"An error occurred: {e}")
+        return jsonify({"error": str(e)}), 500
 
 
-
-#http://127.0.0.1:5000/advisor/getall
+#http://127.0.0.1:5000/advisors/getall
 @app.route('/advisors/getall', methods = ['GET'])
 @cross_origin()
 def get_advisors():
     try:
-        response = advisor_table.scan(AttributesToGet=['username'])
+        # Just get top 10 advisors
+        response = advisor_table.scan(AttributesToGet=['username', 'location', 'interests', 'languages'], Limit = 10)
         items = response.get('Items', [])
         usernames = [item['username'] for item in items]
         print(usernames)
-        advisor_response = json.dumps(usernames)
-        return Response(response=advisor_response, content_type='application/json', status=200)
+        #advisor_response = json.dumps(usernames)
+        #return Response(response=advisor_response, content_type='application/json', status=200)
+        return jsonify(items)
     except Exception as e:
         return Response(response=json.dumps({"error": str(e)}), content_type='application/json', status=500)
 

@@ -11,39 +11,67 @@ const SearchAdvisorsScreen = ({ navigation }) => {
   const [selectedInterest, setSelectedInterest] = useState([]);
 
   const locations = [
-    { label: 'New York', value: 'new_york' },
-    { label: 'Rome', value: 'rome' },
-    { label: 'Paris', value: 'paris' },
-    { label: 'Tokyo', value: 'tokyo' },
-    { label: 'Sydney', value: 'sydney' },
-    { label: 'Buenos Aires', value: 'buenos_aires' }
+    { label: 'New York', value: 'New York' },
+    { label: 'Rome', value: 'Rome' },
+    { label: 'Paris', value: 'Paris' },
+    { label: 'Tokyo', value: 'Tokyo' },
+    { label: 'Sydney', value: 'Sydney' },
+    { label: 'Buenos Aires', value: 'Buenos Aires' }
   ];
-  
+    
   const languages = [
-    { label: 'English', value: 'english' },
-    { label: 'Italian', value: 'italian' },
-    { label: 'French', value: 'french' },
-    { label: 'Japanese', value: 'japanese' },
-    { label: 'Spanish', value: 'spanish' }
+    { label: 'English', value: 'English' },
+    { label: 'Italian', value: 'Italian' },
+    { label: 'French', value: 'French' },
+    { label: 'Japanese', value: 'Japanese' },
+    { label: 'Spanish', value: 'Spanish' }
   ];
-  
+    
   const interests = [
-    { label: 'Budget', value: 'budget' },
-    { label: 'Outdoors', value: 'outdoors' },
-    { label: 'Nightlife', value: 'nightlife' },
-    { label: 'Family-Friendly', value: 'family_friendly' },
-    { label: 'Scenic', value: 'scenic' },
-    { label: 'Foodie', value: 'foodie' }
+    { label: 'Budget', value: 'Budget' },
+    { label: 'Outdoors', value: 'Outdoors' },
+    { label: 'Nightlife', value: 'Nightlife' },
+    { label: 'Family-Friendly', value: 'Family-Friendly' },
+    { label: 'Scenic', value: 'Scenic' },
+    { label: 'Foodie', value: 'Foodie' }
   ];
   
+  
 
-  const handleSearch = () => {
-    // Perform search functionality here
+  const handleSearch = async () => {
+    try {
+      const queryParams = new URLSearchParams({
+        languages: selectedLanguage,
+        location: selectedLocation,
+        interests: selectedInterest.join(','),
+      });
+  
+      const response = await fetch(`http://127.0.0.1:5000/advisors/query?${queryParams}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const advisors = await response.json();
+  
+      navigation.navigate('Dashboard', { advisors: advisors });
+    } catch (error) {
+      console.error('There was an error fetching the advisors:', error);
+    }
   };
 
-  const handleSeeAllAdvisors = () => {
-    // Implement your navigation logic here
+  const handleSeeAllAdvisors = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/advisors/getall');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const allAdvisors = await response.json();
+  
+      navigation.navigate('Dashboard', { advisors: allAdvisors });
+    } catch (error) {
+      console.error('There was an error fetching the top advisors:', error);
+    }
   };
+  
 
   return (
     <View contentContainerStyle={styles.container}>
@@ -94,39 +122,39 @@ const SearchAdvisorsScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20, // Top padding
+    paddingTop: 20,
     paddingHorizontal: 20,
-    paddingRight: 20, // Right padding
-    alignItems: 'stretch', // Aligns Picker components and maintains consistent margins
-    justifyContent: 'center', // Centers content in the screen vertically (optional)
+    paddingRight: 20,
+    alignItems: 'stretch',
+    justifyContent: 'center',
   },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 10,
-    color: '#000', // Ensuring good readability
+    color: '#000',
   },
   picker: {
     height: 40,
     marginBottom: 15,
   },
   button: {
-    backgroundColor: '#0066CC', // A color that stands out
+    backgroundColor: '#0066CC',
     padding: 15,
     borderRadius: 5,
-    alignItems: 'center', // Centering button text
-    marginTop: 10, // Added margin top for spacing from the last Picker
+    alignItems: 'center',
+    marginTop: 10,
   },
   buttonSecondary: {
-    backgroundColor: '#000', // A color that stands out
+    backgroundColor: '#000',
     padding: 15,
     borderRadius: 5,
-    alignItems: 'center', // Centering button text
-    marginTop: 10, // Added margin top for spacing from the last Picker
+    alignItems: 'center',
+    marginTop: 10,
   },
   buttonText: {
-    color: '#fff', // White color for button text to stand out
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
