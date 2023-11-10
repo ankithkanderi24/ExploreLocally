@@ -3,14 +3,18 @@ import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { Linking } from 'react-native';
 
 
-const PersonCard = ({username, phone }) => {
-  const makeCall = (phone) => {
-    Linking.openURL(`tel:${phone}`);
+const PersonCard = ({username, location, interests, languages }) => {
+
+  const renderArrayAsString = (array) => {
+    return Array.isArray(array) && array.length ? array.join(', ') : 'None';
   };
+
   return (
     <View style={styles.card}>
-      <Text>{username}</Text>
-      <Button title="Call" onPress={() => makeCall(phone)} />
+      <Text style={styles.name}>{username}</Text>
+      <Text>Location: {location}</Text>
+      <Text>Languages: {renderArrayAsString(languages)}</Text>
+      <Text>Interests: {renderArrayAsString(interests)}</Text>
     </View>
   );
 };

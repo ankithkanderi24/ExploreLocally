@@ -3,20 +3,22 @@ import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import PersonCard from './PersonCard'; // Import the PersonCard component
-import LoginScreen from './Screens/loginScreen'; // Import the LoginScreen
+import PersonCard from './PersonCard';
+import LoginScreen from './Screens/loginScreen';
 import RegistrationScreen from './Screens/registrationScreen';
 import AdvisorWaitingScreen from './Screens/AdvisorWaitingScreen';
 import AdvisorRegistrationInformationScreen from './Screens/AdvisorRegistrationInformationScreen';
+import SearchAdvisorsScreen from './Screens/SearchAdvisorsScreen';
+import DashboardScreen from './Screens/DashboardScreen';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   const [data, setData] = useState([]);
-  const [username, setUsername] = useState(null);  // New state to track login
+  const [username, setUsername] = useState(null);
   
   useEffect(() => {
-    if (username) {  // Only fetch data if logged in
+    if (username) { 
       fetch('http://127.0.0.1:5000/advisors/getall')
         .then((response) => response.json())
         .then((jsonData) => setData(jsonData))
@@ -33,15 +35,8 @@ const App = () => {
         <Stack.Screen name="Registration" component={RegistrationScreen} />
         <Stack.Screen name = "Waiting" component={AdvisorWaitingScreen} />
         <Stack.Screen name = "AdvisorRegistration" component={AdvisorRegistrationInformationScreen} />
-        <Stack.Screen name="Dashboard">
-          {props => (
-            <SafeAreaView style={styles.container}>
-              {data.map((username, index) => (
-                <PersonCard key={index} username={username} />
-              ))}
-            </SafeAreaView>
-          )}
-        </Stack.Screen>
+        <Stack.Screen name="SearchAdvisors" component={SearchAdvisorsScreen} />
+        <Stack.Screen name="Dashboard" component={DashboardScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
