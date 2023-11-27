@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { API_URL } from '../App';
 
 const SearchAdvisorsScreen = ({ navigation }) => {
   const [openLocation, setOpenLocation] = useState(false);
@@ -18,7 +19,7 @@ const SearchAdvisorsScreen = ({ navigation }) => {
     { label: 'Sydney', value: 'Sydney' },
     { label: 'Buenos Aires', value: 'Buenos Aires' }
   ];
-    
+
   const languages = [
     { label: 'English', value: 'English' },
     { label: 'Italian', value: 'Italian' },
@@ -26,7 +27,7 @@ const SearchAdvisorsScreen = ({ navigation }) => {
     { label: 'Japanese', value: 'Japanese' },
     { label: 'Spanish', value: 'Spanish' }
   ];
-    
+
   const interests = [
     { label: 'Budget', value: 'Budget' },
     { label: 'Outdoors', value: 'Outdoors' },
@@ -35,8 +36,8 @@ const SearchAdvisorsScreen = ({ navigation }) => {
     { label: 'Scenic', value: 'Scenic' },
     { label: 'Foodie', value: 'Foodie' }
   ];
-  
-  
+
+
 
   const handleSearch = async () => {
     try {
@@ -45,13 +46,13 @@ const SearchAdvisorsScreen = ({ navigation }) => {
         location: selectedLocation,
         interests: selectedInterest.join(','),
       });
-  
-      const response = await fetch(`http://127.0.0.1:5000/advisors/query?${queryParams}`);
+
+      const response = await fetch(`${API_URL}/advisors/query?${queryParams}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const advisors = await response.json();
-  
+
       navigation.navigate('Dashboard', { advisors: advisors });
     } catch (error) {
       console.error('There was an error fetching the advisors:', error);
@@ -60,18 +61,18 @@ const SearchAdvisorsScreen = ({ navigation }) => {
 
   const handleSeeAllAdvisors = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/advisors/getall');
+      const response = await fetch(`${API_URL}/advisors/getall`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const allAdvisors = await response.json();
-  
+
       navigation.navigate('Dashboard', { advisors: allAdvisors });
     } catch (error) {
       console.error('There was an error fetching the top advisors:', error);
     }
   };
-  
+
 
   return (
     <View contentContainerStyle={styles.container}>

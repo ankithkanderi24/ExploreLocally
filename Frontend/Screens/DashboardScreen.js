@@ -1,22 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, ScrollView, StyleSheet, StatusBar } from 'react-native';
+import { View, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import PersonCard from '../PersonCard';
+import { API_URL } from '../App';
 
 const DashboardScreen = ({ route }) => {
-  
   const [data, setData] = useState([]);
 
-  
+  // Fetch data when component mounts
   useEffect(() => {
+    const fetchRatingsForAdvisors = (advisors) => {
+      // Map over the advisors to create a promise for each one's rating
+      const ratingPromises = advisors.map((advisor) => {
+        return fetch(`${API_URL}/advisors/rating/${advisor.username}`)
+          .then((response) => response.json())
+          .then((ratingData) => {
+            return { ...advisor, rating: ratingData.average_rating };
+          })
+          .catch((error) => {
+            console.error('Error fetching rating for', advisor.username, error);
+            return { ...advisor, rating: 'None' };
+          });
+      });
+
+      // Once all the ratings are fetched, update the state
+      Promise.all(ratingPromises).then((updatedAdvisors) => {
+        setData(updatedAdvisors);
+      });
+    };
+
     if (route.params?.advisors) {
-      
-      setData(route.params.advisors);
+      fetchRatingsForAdvisors(route.params.advisors);
     } else {
-      
-      fetch('http://127.0.0.1:5000/advisors/getall')
+      // Fetch all advisors if no advisors are passed in route params
+      fetch(`${API_URL}/advisors/getall`)
         .then((response) => response.json())
-        .then((jsonData) => setData(jsonData))
-        .catch((error) => console.error(error));
+        .then((allAdvisors) => {
+          fetchRatingsForAdvisors(allAdvisors);
+        })
+        .catch((error) => {
+          console.error('Error fetching advisors:', error);
+        });
     }
   }, [route.params?.advisors]);
 
@@ -31,6 +54,7 @@ const DashboardScreen = ({ route }) => {
               location={advisor.location}
               interests={advisor.interests}
               languages={advisor.languages}
+              rating={advisor.rating}
             />
           ))}
         </ScrollView>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Switch, Text, Alert } from 'react-native';
+import { API_URL } from '../App';
 
 
 
@@ -10,7 +11,7 @@ const LoginScreen = ({ onLogin, navigation }) => {
 
   const handleLogin = () => {
     const userType = isAdvisor ? 'advisors' : 'users';  // Determine user type based on toggle state
-    fetch(`http://127.0.0.1:5000/${userType}/verify/${username}/${password}`, {
+    fetch(`${API_URL}/${userType}/verify/${username}/${password}`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
