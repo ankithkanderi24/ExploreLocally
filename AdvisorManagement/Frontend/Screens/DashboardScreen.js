@@ -20,17 +20,29 @@ const DashboardScreen = ({ route }) => {
     }
   }, [route.params?.advisors]);
 
+  const handleApprove = (username) => {
+    console.log("Approved:", username);
+    // Implement the logic to approve the application
+  };
+
+  const handleDeny = (username) => {
+    console.log("Denied:", username);
+    // Implement the logic to deny the application
+  };
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.scrollContainer}>
         <ScrollView>
           {data.map((advisor, index) => (
-            <PersonCard
+            <AdvisorApplication
               key={index}
               username={advisor.username}
               location={advisor.location}
               interests={advisor.interests}
               languages={advisor.languages}
+              onApprove={handleApprove}
+              onDeny={handleDeny}
             />
           ))}
         </ScrollView>

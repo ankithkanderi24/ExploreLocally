@@ -3,7 +3,15 @@ import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { Linking } from 'react-native';
 
 
-const AdvisorApplication = ({username, location, interests, languages }) => {
+const AdvisorApplication = ({username, location, interests, languages, onApprove, onDeny }) => {
+
+  const handleApprove = () => {
+    onApprove(username); // Assuming username is a unique identifier
+  };
+
+  const handleDeny = () => {
+    onDeny(username); // Assuming username is a unique identifier
+  };
 
   const renderArrayAsString = (array) => {
     return Array.isArray(array) && array.length ? array.join(', ') : 'None';
@@ -15,6 +23,16 @@ const AdvisorApplication = ({username, location, interests, languages }) => {
       <Text>Location: {location}</Text>
       <Text>Languages: {renderArrayAsString(languages)}</Text>
       <Text>Interests: {renderArrayAsString(interests)}</Text>
+      <Button
+        title="Approve"
+        onPress={handleApprove}
+        color="green"
+      />
+      <Button
+        title="Deny"
+        onPress={handleDeny}
+        color="red"
+      />
     </View>
   );
 };
