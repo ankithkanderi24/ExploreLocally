@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Switch, Text, Alert } from 'react-native';
+import { API_URL } from '../App';
 
 const RegistrationScreen = ({ onRegister, navigation }) => {
   const [username, setUsername] = useState('');
@@ -9,7 +10,7 @@ const RegistrationScreen = ({ onRegister, navigation }) => {
 
   const handleRegistration = () => {
     const userType = isAdvisor ? 'advisors' : 'users';
-    fetch(`http://127.0.0.1:5000/${userType}/register/${username}/${password}/${email}`, {
+    fetch(`${API_URL}/${userType}/register/${username}/${password}/${email}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
