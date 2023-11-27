@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Picker, CheckBox, ScrollView, TouchableOpacity, Button, Alert } from 'react-native';
 
 const AdvisorRegistrationInformationScreen = ({ route, navigation }) => {
-  const { username } = route.params;
+  const { username, phoneNumber, address } = route.params;
   const [selectedLocation, setSelectedLocation] = useState('New York');
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -36,7 +36,7 @@ const AdvisorRegistrationInformationScreen = ({ route, navigation }) => {
     };
   
     // Make the API call
-    fetch(`http://127.0.0.1:5000/advisors/registerinformation/${username}`, {
+    fetch(`http://127.0.0.1:5000/advisors/registerinformation/${username}/${phoneNumber}/${address}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -53,19 +53,8 @@ const AdvisorRegistrationInformationScreen = ({ route, navigation }) => {
       })
       .then(({ status, text }) => {
         if (status === 200) {
-          // Successful registration
-          Alert.alert(
-            'Registration Successful',
-            'You have been registered as an advisor in our system.',
-            [
-              {
-                text: 'OK',
-                onPress: () => navigation.navigate('Login'), // Navigate back to the login screen
-              },
-            ]
-          );
+          navigation.navigate('Login');
         } else {
-          // Handle registration failure
           Alert.alert('Registration Failed', text);
         }
       })
