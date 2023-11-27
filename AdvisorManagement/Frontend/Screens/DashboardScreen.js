@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, SafeAreaView, ScrollView, StyleSheet, StatusBar } from 'react-native';
-import PersonCard from '../PersonCard';
+import AdvisorApplication from '../AdvisorApplication';
 
 const DashboardScreen = ({ route }) => {
   

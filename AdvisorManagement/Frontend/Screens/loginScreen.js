@@ -92,12 +92,7 @@ const styles = StyleSheet.create({
     borderColor: '#3498db',  // Primary color for the border
     borderWidth: 1,
     marginBottom: 20,
-    paddingLeft: 10,
-    elevation: 3,  // Shadow for Android
-    shadowOffset: { width: 1, height: 1 },  // Shadow for iOS
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    paddingLeft: 10
   }
 });
 

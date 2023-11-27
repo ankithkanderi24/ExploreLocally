@@ -28,7 +28,6 @@ const App = () => {
         <Stack.Screen name="Login">
           {props => <LoginScreen {...props} onLogin={setUsername} />}
         </Stack.Screen>
-        <Stack.Screen name = "AdvisorRegistration" component={AdvisorRegistrationInformationScreen} />
         <Stack.Screen name="Dashboard" component={DashboardScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
