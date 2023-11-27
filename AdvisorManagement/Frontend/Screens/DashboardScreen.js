@@ -8,26 +8,41 @@ const DashboardScreen = ({ route }) => {
 
   
   useEffect(() => {
-    if (route.params?.advisors) {
-      
-      setData(route.params.advisors);
-    } else {
-      
-      fetch('http://127.0.0.1:5000/advisors/getall')
+      fetch('http://127.0.0.1:5000/advisors_application/getall')
         .then((response) => response.json())
         .then((jsonData) => setData(jsonData))
         .catch((error) => console.error(error));
     }
-  }, [route.params?.advisors]);
+  );
 
   const handleApprove = (username) => {
-    console.log("Approved:", username);
-    // Implement the logic to approve the application
+    console.log("Approving:", username);
+    
+    fetch(`http://127.0.0.1:5000/advisors_application/approve/${username}`, { method: 'GET' })
+    .then((response) => {
+      if (response.ok) {
+        console.log("Advisor approved successfully");
+        // Optionally, refresh the list or remove the approved advisor from the UI
+      } else {
+        console.error("Error approving advisor");
+      }
+    })
+    .catch((error) => console.error("Error:", error));
   };
 
   const handleDeny = (username) => {
-    console.log("Denied:", username);
-    // Implement the logic to deny the application
+    console.log("Denying:", username);
+    
+    fetch(`http://127.0.0.1:5000/advisors_application/deny/${username}`, { method: 'POST' })
+    .then((response) => {
+      if (response.ok) {
+        console.log("Advisor denied successfully");
+        // Optionally, refresh the list or remove the approved advisor from the UI
+      } else {
+        console.error("Error denying advisor");
+      }
+    })
+    .catch((error) => console.error("Error:", error));
   };
 
   return (
@@ -38,6 +53,8 @@ const DashboardScreen = ({ route }) => {
             <AdvisorApplication
               key={index}
               username={advisor.username}
+              phone_number={advisor.phone_number}
+              address = {advisor.address}
               location={advisor.location}
               interests={advisor.interests}
               languages={advisor.languages}

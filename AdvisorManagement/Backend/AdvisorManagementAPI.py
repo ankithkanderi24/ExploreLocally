@@ -23,7 +23,7 @@ def hello():
     return "Health Check!"
 
 
-#http://127.0.0.1:5000/advisors/getall
+#http://127.0.0.1:5000/advisors_application/getall
 @app.route('/advisors_application/getall', methods = ['GET'])
 @cross_origin()
 def get_advisors():
@@ -36,7 +36,7 @@ def get_advisors():
     except Exception as e:
         return Response(response=json.dumps({"error": str(e)}), content_type='application/json', status=500)
 
-#http://127.0.0.1:5000/advisors/getall
+#http://127.0.0.1:5000/advisors_application/approve/<username>
 @app.route('/advisors_application/approve/<username>', methods = ['GET'])
 @cross_origin()
 def approve_advisor(username):
@@ -57,6 +57,17 @@ def approve_advisor(username):
         advisor_table.put_item(Item = new_item)
         response = advisor_application_table.delete_item(Key={'username': username})
         return "Advisor Approved", 200
+    except Exception as e:
+        return Response(response=json.dumps({"error": str(e)}), content_type='application/json', status=500)
+    
+
+#http://127.0.0.1:5000/advisors_application/deny/<username>
+@app.route('/advisors_application/deny/<username>', methods = ['POST'])
+@cross_origin()
+def deny_username(username):
+    try:
+        response = advisor_application_table.delete_item(Key={'username': username})
+        return "Advisor Denied", 200
     except Exception as e:
         return Response(response=json.dumps({"error": str(e)}), content_type='application/json', status=500)
 

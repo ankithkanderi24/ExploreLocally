@@ -24,7 +24,7 @@ const App = () => {
   
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Dashboard">
         <Stack.Screen name="Login">
           {props => <LoginScreen {...props} onLogin={setUsername} />}
         </Stack.Screen>

@@ -3,7 +3,7 @@ import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { Linking } from 'react-native';
 
 
-const AdvisorApplication = ({username, location, interests, languages, onApprove, onDeny }) => {
+const AdvisorApplication = ({username, phone_number, address, location, interests, languages, onApprove, onDeny }) => {
 
   const handleApprove = () => {
     onApprove(username); // Assuming username is a unique identifier
@@ -20,6 +20,8 @@ const AdvisorApplication = ({username, location, interests, languages, onApprove
   return (
     <View style={styles.card}>
       <Text style={styles.name}>{username}</Text>
+      <Text>Phone Number: {phone_number}</Text>
+      <Text>Address: {address}</Text>
       <Text>Location: {location}</Text>
       <Text>Languages: {renderArrayAsString(languages)}</Text>
       <Text>Interests: {renderArrayAsString(interests)}</Text>
