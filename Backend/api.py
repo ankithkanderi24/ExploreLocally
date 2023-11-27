@@ -14,6 +14,7 @@ user_pool_id = 'us-east-1_k1xovBg3P'
 dynamodb = boto3.resource('dynamodb')
 user_table = dynamodb.Table('User-Table')
 advisor_table = dynamodb.Table('Advisor-Table')
+advisor_application_table = dynamodb.Table('Advisor-Application-Table')
 
 
 #http://127.0.0.1:5000/
@@ -66,9 +67,9 @@ def register_user(username, password, email):
 
     
 #http://127.0.0.1:5000/advisors/register/<username>/<password>
-@app.route('/advisors/register/<username>/<password>/<email>', methods = ['POST'])
+@app.route('/advisors/register/<username>/<password>/<email>/<number>/<address>', methods = ['POST'])
 @cross_origin()
-def register_advisor_account(username, password, email):
+def register_advisor_account(username, password, email, number, address):
     try:
         if not username or not password:
             return "Username, email, and password are required", 401
@@ -84,7 +85,14 @@ def register_advisor_account(username, password, email):
                 {'Name': 'email', 'Value': email},
             ]
         )
-        advisor_table.put_item(Item={'username': username})
+
+        item = {
+            'username': username,
+            'phone_number': number,
+            'address': address
+        }
+
+        advisor_application_table.put_item(Item = item)
 
         return "User registered successfully", 200
     except cognito_client.exceptions.UsernameExistsException as e:
@@ -95,10 +103,13 @@ def register_advisor_account(username, password, email):
         return "Method Not Allowed", 405
 
 
+
+
+
 #http://127.0.0.1:5000/advisors/registerinformation/<username>/<password>
-@app.route('/advisors/registerinformation/<username>', methods = ['POST'])
+@app.route('/advisors/registerinformation/<username>/<number>/<address>', methods = ['POST'])
 @cross_origin()
-def register_advisor_information(username):
+def register_advisor_information(username, number, address):
         data = request.json
 
         languages_set = set(data.get('languages', []))
@@ -107,14 +118,14 @@ def register_advisor_information(username):
 
         item = {
             'username': username,
+            'phone_number': number,
+            'address': address,
             'languages': list(languages_set),
             'interests': list(interests_set),
-            'location': location, 
-            'rating': 0, 
-            'rating_num': 0
+            'location': location
         }
 
-        advisor_table.put_item(Item = item)
+        advisor_application_table.put_item(Item = item)
 
         return "Advisor Updated", 200
 
@@ -135,9 +146,15 @@ def user_login(username, password):
                 'USERNAME': username,
                 'PASSWORD': password,
             }
-        )   
+        )
 
-        return "User exists and password is correct", 200 
+        dynamo_response = user_table.query(KeyConditionExpression=boto3.dynamodb.conditions.Key('username').eq(username))
+        items = dynamo_response.get('Items', [])
+
+        if len(items) > 0:
+            return "User exists and password is correct", 200
+        else:
+            return "User not yet approved", 404
     except cognito_client.exceptions.UserNotFoundException as e:
         return "User not found", 404
     except cognito_client.exceptions.NotAuthorizedException as e:
@@ -160,8 +177,15 @@ def advisor_login(username, password):
                 'USERNAME': username,
                 'PASSWORD': password,
             }
-        )   
-        return "User exists and password is correct", 200 
+        )
+
+        dynamo_response = advisor_table.query(KeyConditionExpression=boto3.dynamodb.conditions.Key('username').eq(username))
+        items = dynamo_response.get('Items', [])
+
+        if len(items) > 0:
+            return "User exists and password is correct", 200
+        else:
+            return "User not yet approved", 404
     except cognito_client.exceptions.UserNotFoundException as e:
         return "User not found", 404
     except cognito_client.exceptions.NotAuthorizedException as e:

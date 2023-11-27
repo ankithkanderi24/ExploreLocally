@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Picker, CheckBox, ScrollView, TouchableOpacity, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Button, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { CheckBox } from 'react-native-elements';
 
 const AdvisorRegistrationInformationScreen = ({ route, navigation }) => {
-  const { username } = route.params;
+  const { username, phoneNumber, address } = route.params;
   const [selectedLocation, setSelectedLocation] = useState('New York');
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -36,7 +38,7 @@ const AdvisorRegistrationInformationScreen = ({ route, navigation }) => {
     };
   
     // Make the API call
-    fetch(`http://127.0.0.1:5000/advisors/registerinformation/${username}`, {
+    fetch(`http://127.0.0.1:5000/advisors/registerinformation/${username}/${phoneNumber}/${address}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -64,6 +66,7 @@ const AdvisorRegistrationInformationScreen = ({ route, navigation }) => {
               },
             ]
           );
+        navigation.navigate("Login")
         } else {
           // Handle registration failure
           Alert.alert('Registration Failed', text);
@@ -90,28 +93,26 @@ const AdvisorRegistrationInformationScreen = ({ route, navigation }) => {
 
         <Text style={styles.label}>Select Proficient Languages:</Text>
         {languages.map((language) => (
-          <View key={language} style={styles.checkboxContainer}>
-            <CheckBox
-              value={selectedLanguages.includes(language)}
-              onValueChange={() => handleLanguageToggle(language)}
-            />
-            <Text style={styles.checkboxLabel}>{language}</Text>
-          </View>
+          <CheckBox
+            key={language}
+            title={language}
+            checked={selectedLanguages.includes(language)}
+            onPress={() => handleLanguageToggle(language)}
+            containerStyle={styles.checkboxContainer}
+            textStyle={styles.checkboxLabel}
+          />
         ))}
 
         <Text style={styles.label}>Select Your Specific Areas of Knowledge:</Text>
         {interests.map((interest) => (
-          <TouchableOpacity
+          <CheckBox
             key={interest}
-            style={styles.checkboxContainer}
+            title={interest}
+            checked={selectedInterests.includes(interest)}
             onPress={() => handleInterestToggle(interest)}
-          >
-            <CheckBox
-              value={selectedInterests.includes(interest)}
-              onValueChange={() => handleInterestToggle(interest)}
-            />
-            <Text style={styles.checkboxLabel}>{interest}</Text>
-          </TouchableOpacity>
+            containerStyle={styles.checkboxContainer}
+            textStyle={styles.checkboxLabel}
+          />
         ))}
 
         <Button title="Submit" onPress={handleRegistrationInformation} />
